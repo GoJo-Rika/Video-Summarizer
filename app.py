@@ -1,3 +1,4 @@
+import os
 import tempfile
 import time
 from pathlib import Path
@@ -12,15 +13,13 @@ from google.generativeai import get_file, upload_file
 
 load_dotenv()
 
-import os
-
 API_KEY = os.getenv("GOOGLE_API_KEY")
 if API_KEY:
     genai.configure(api_key=API_KEY)
 
 # Page configuration
 st.set_page_config(
-    page_title="Multimodal AI Agent- Video Summarizer", page_icon="🎥", layout="wide"
+    page_title="Multimodal AI Agent- Video Summarizer", page_icon="🎥", layout="wide",
 )
 
 st.title("Agno Video AI Summarizer Agent 🎥🎤")
@@ -28,7 +27,7 @@ st.header("Powered by Gemini")
 
 
 @st.cache_resource
-def initialize_agent():
+def initialize_agent() -> Agent:
     return Agent(
         name="Video AI Summarizer",
         model=Gemini(id="gemini-2.0-flash-lite"),
@@ -38,7 +37,7 @@ def initialize_agent():
 
 
 ## Initialize the agent
-multimodal_Agent = initialize_agent()
+multimodal_agent = initialize_agent()
 
 # File uploader
 video_file = st.file_uploader(
@@ -85,15 +84,15 @@ if video_file:
                     print("Attributes:", dir(processed_video))
 
                     # AI agent processing
-                    response = multimodal_Agent.run(
-                        analysis_prompt, videos=[{"filepath": video_path}]
+                    response = multimodal_agent.run(
+                        analysis_prompt, videos=[{"filepath": video_path}],
                     )
 
                 # Display the result
                 st.subheader("Analysis Result")
                 st.markdown(response.content)
 
-            except Exception as error:
+            except (FileNotFoundError, ValueError, TimeoutError, ConnectionError) as error:
                 st.error(f"An error occurred during analysis: {error}")
             finally:
                 # Clean up temporary video file
