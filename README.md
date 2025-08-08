@@ -71,7 +71,7 @@ Before you begin, ensure you have **Python 3.8 or higher** installed.
 
 First, clone the repository and navigate to the project directory:
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/GoJo-Rika/Video-Summarizer.git
 cd Video-Summarizer
 ```
 
